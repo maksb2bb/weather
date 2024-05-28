@@ -1,22 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:weather/aboutUS.dart';
-import 'settings.dart';
-import 'dart:convert' as convert;
 import 'package:http/http.dart' as http;
+import 'package:weather/settings.dart';
+
+import 'aboutUS.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      'android.settings.LOCATION_SOURCE_SETTINGS';
     }
 
     permission = await Geolocator.checkPermission();
@@ -72,7 +69,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Location permissions are permanently denied, we cannot request permissions.'
+      );
     }
 
     Position position = await Geolocator.getCurrentPosition();
@@ -134,6 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Future<void> _refresh() async {
+    await _determineUserLocation();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,12 +143,11 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Colors.blue,
         title: Text(
           _City,
-          style:
-          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
           PopupMenuButton<int>(
-            icon: Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert),
             iconColor: Colors.white,
             onSelected: (value) {
               if (value == 1) {
@@ -170,78 +171,73 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Scaffold(
-        backgroundColor: Colors.blue,
-        body: Column(
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView(
           children: [
-            Align(
-              alignment: const AlignmentDirectional(0, -1),
-              child: _isday == 0
-                  ? Image.asset("assets/images/Moon.png")
-                  : Image.asset("assets/images/Sunny.png"),
-            ),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '$_temp°',
-                style: const TextStyle(fontSize: 90, color: Colors.white),
-              ),
-            ),
-            Expanded(
-              child: Align(
-                alignment: const AlignmentDirectional(0, 1),
-                child: Container(
-                  padding: const EdgeInsets.all(15.0),
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(0),
-                      bottomRight: Radius.circular(0),
-                      topLeft: Radius.circular(90),
-                      topRight: Radius.circular(45),
+            Container(
+              width: double.infinity,
+              color: Colors.blue,
+              child: Column(
+                children: [
+                  Align(
+                    alignment: const AlignmentDirectional(0, -1),
+                    child: _isday == 0
+                        ? Image.asset("assets/images/Moon.png")
+                        : Image.asset("assets/images/Sunny.png"),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Text(
+                          '$_temp° ',
+                          style: const TextStyle(fontSize: 90, color: Colors.white),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const ImageIcon(
+                                    AssetImage("assets/icon/wind_speed_icon.png")),
+                                Text(
+                                  '$_windspd км/ч',
+                                  style: const TextStyle(fontSize: 23, color: Colors.white),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const ImageIcon(
+                                    AssetImage("assets/icon/temper.png")),
+                                Text(
+                                  '$_feelslike°',
+                                  style: const TextStyle(fontSize: 23, color: Colors.white),
+                                ),
+                              ],
+                            )
+                          ],
+                        )
+                      ],
                     ),
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const Text(
-                            "Скорость ветра:    ",
-                            style: TextStyle(fontSize: 25, color: Colors.grey),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            '$_windspd км/ч',
-                            style: TextStyle(fontSize: 25, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.max,
-                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const Text(
-                            "Ощущается как:    ",
-                            style: TextStyle(fontSize: 25, color: Colors.grey),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text(
-                            "$_feelslike°",
-                            style: TextStyle(fontSize: 25, color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ),
             ),
+            Container(
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                color: Colors.green,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(45),
+                  topRight: Radius.circular(20)
+                )
+              ),
+              child: Text(
+                'Hellow'
+              ),
+            )
           ],
         ),
       ),
