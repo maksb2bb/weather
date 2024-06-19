@@ -307,38 +307,38 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  const ImageIcon(
-                                    AssetImage("assets/icon/wind_speed_icon.png"),
-                                    size: 30,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    '$_windspd м/ч',
-                                    style: const TextStyle(
-                                        fontSize: 23, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const ImageIcon(
-                                    AssetImage("assets/icon/temper.png"),
-                                    size: 30,
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    '$_feelslike°',
-                                    style: const TextStyle(
-                                        fontSize: 23, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ]
-                          ),
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const ImageIcon(
+                                      AssetImage(
+                                          "assets/icon/wind_speed_icon.png"),
+                                      size: 30,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '$_windspd м/ч',
+                                      style: const TextStyle(
+                                          fontSize: 23, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    const ImageIcon(
+                                      AssetImage("assets/icon/temper.png"),
+                                      size: 30,
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Text(
+                                      '$_feelslike°',
+                                      style: const TextStyle(
+                                          fontSize: 23, color: Colors.white),
+                                    ),
+                                  ],
+                                ),
+                              ]),
                         ],
                       ),
                     ],
@@ -356,7 +356,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   child: Column(
                     children: [
-                      Text('Граффик температуры в течении дня'),
+                      const Padding(
+                        padding: EdgeInsets.all(15.0),
+                        child: Text(
+                          'Граффик температуры в течении дня',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ),
                       SizedBox(
                         width: MediaQuery.of(context).size.width - 50,
                         height: 300, // Adjust the height as needed
