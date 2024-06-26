@@ -8,8 +8,8 @@ import 'package:weather/layers/data/models/weather_data.dart';
 import 'package:weather/layers/data/repositories/weather_repository.dart';
 import 'package:weather/layers/domain/usecases/get_weather_usecase.dart';
 import 'package:weather/layers/presentation/widgets/weather_icons.dart';
-import 'package:weather/aboutUS.dart';
-import 'package:weather/settings.dart';
+import 'package:weather/layers/presentation/pages/about_us_page.dart';
+import 'package:weather/layers/presentation/pages/settings_page.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 
 class MyHomePage extends StatefulWidget {
@@ -27,7 +27,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   WeatherData? _weatherData;
 
-  final GetWeatherUseCase _getWeatherUseCase = GetWeatherUseCase(WeatherRepository());
+  final GetWeatherUseCase _getWeatherUseCase =
+      GetWeatherUseCase(WeatherRepository());
 
   @override
   void initState() {
@@ -68,8 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Colors.blue,
         title: Text(
-          _weatherData?.city ?? 'Loading...',
-          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          _weatherData?.city ?? 'Поиск геолокации...',
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
           PopupMenuButton<int>(
@@ -109,10 +111,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   alignment: const AlignmentDirectional(0, -1),
                   child: _weatherData != null
                       ? Image.asset(
-                    weatherIcons[_weatherData!.weatherIcon] ?? 'assets/images/default.png',
-                    height: 200,
-                    width: 200,
-                  )
+                          weatherIcons[_weatherData!.weatherIcon] ??
+                              'assets/images/default.png',
+                          height: 200,
+                          width: 200,
+                        )
                       : const SizedBox.shrink(), // Hide when data is null
                 ),
                 Align(
@@ -121,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Row(
                         children: [
                           Text(
-                            '${_weatherData?.temp ?? '0'}° ',
+                            ' ${_weatherData?.temp ?? '0'}° ',
                             style: const TextStyle(
                               fontSize: 70,
                               color: Colors.white,
@@ -167,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 Container(
                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height - kToolbarHeight,
+                  height: MediaQuery.of(context).size.height - 330,
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -185,14 +188,22 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 50,
+                        width: MediaQuery.of(context).size.width - 30,
                         height: 300,
                         child: _weatherData != null
                             ? TemperatureChart(
-                          _createSampleData(_weatherData!.temperatureData),
-                          animate: true,
-                        )
-                            : const Center(child: Text('Loading...')), // Show message when data is null
+                                _createSampleData(
+                                    _weatherData!.temperatureData),
+                                animate: true,
+                              )
+                            : Center(
+                                child: MaterialButton(
+                                onPressed: _refresh,
+                                  color: Colors.blue,
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.0)),
+                                clipBehavior: Clip.antiAlias,
+                                child: const Text('Обновить'),
+                              )),
                       ),
                     ],
                   ),

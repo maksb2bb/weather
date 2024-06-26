@@ -13,8 +13,8 @@ class AboutUSPage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
-      body: Scaffold(
-        backgroundColor: Colors.blue,
+      body: const Scaffold(
+        backgroundColor: Colors.white,
         body: Align(
           alignment: Alignment.center,
           child: Text('v 1.0.0'),
